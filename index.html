@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcademiaAI — Intelligent Student Academic Support Assistant</title>
+  <meta name="description" content="AI-style academic companion for college students: intelligent study planner, concept explainer, exam revision, aptitude practice, and career guidance.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts for modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body data-theme="dark">
+  <div class="app-container">
+    
+    <!-- Collapsible Academic Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo">
+          <div class="logo-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h2>AcademiaAI</h2>
+            <span class="badge">Academic Companion</span>
+          </div>
+        </div>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Live Context & Student Profile Memory Card -->
+      <div class="context-card" id="contextCard">
+        <div class="context-header">
+          <span class="pulse-indicator"></span>
+          <h4>Live Academic Context</h4>
+        </div>
+        <div class="context-items">
+          <div class="context-item">
+            <span class="label">Major / Field:</span>
+            <span class="value" id="ctxMajor">Computer Science (default)</span>
+          </div>
+          <div class="context-item">
+            <span class="label">Focus Subject:</span>
+            <span class="value" id="ctxSubject">None selected</span>
+          </div>
+          <div class="context-item">
+            <span class="label">Target Exam:</span>
+            <span class="value" id="ctxExam">Not set</span>
+          </div>
+          <div class="context-item">
+            <span class="label">Aptitude Score:</span>
+            <span class="value" id="ctxQuizScore">0 / 0</span>
+          </div>
+          <div class="context-item">
+            <span class="label">Active Workflow:</span>
+            <span class="value badge-flow" id="ctxFlow">Idle (Ready)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Integrated Interactive Pomodoro Study Timer -->
+      <div class="pomodoro-widget" id="pomodoroWidget">
+        <div class="pomo-header">
+          <span class="pomo-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            Study Focus Timer
+          </span>
+          <span class="pomo-mode-badge" id="pomoModeBadge">Focus</span>
+        </div>
+        <div class="pomo-display" id="pomoDisplay">25:00</div>
+        <div class="pomo-controls">
+          <button class="pomo-btn primary" id="pomoStartBtn">Start Focus</button>
+          <button class="pomo-btn" id="pomoResetBtn">Reset</button>
+          <button class="pomo-btn secondary" id="pomoModeBtn">Break (5m)</button>
+        </div>
+      </div>
+
+      <!-- Quick Action Modules -->
+      <div class="sidebar-section">
+        <h3>Academic Tools</h3>
+        <nav class="quick-nav">
+          <button class="nav-item" data-action="study-plan">
+            <span class="nav-icon">📅</span>
+            <span>Generate Study Schedule</span>
+          </button>
+          <button class="nav-item" data-action="exam-prep">
+            <span class="nav-icon">🎯</span>
+            <span>3-Phase Revision Plan</span>
+          </button>
+          <button class="nav-item" data-action="aptitude-quiz">
+            <span class="nav-icon">🧠</span>
+            <span>Interactive Aptitude Quiz</span>
+          </button>
+          <button class="nav-item" data-action="explain-concept">
+            <span class="nav-icon">📚</span>
+            <span>Explain Complex Concept</span>
+          </button>
+          <button class="nav-item" data-action="project-ideas">
+            <span class="nav-icon">💡</span>
+            <span>Project & Capstone Ideas</span>
+          </button>
+          <button class="nav-item" data-action="time-management">
+            <span class="nav-icon">⏳</span>
+            <span>Time Management Strategy</span>
+          </button>
+          <button class="nav-item" data-action="career-internship">
+            <span class="nav-icon">💼</span>
+            <span>Career & Internship Roadmap</span>
+          </button>
+          <button class="nav-item" data-action="study-resources">
+            <span class="nav-icon">🔗</span>
+            <span>Free Study Resources</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Sidebar Footer with Utilities -->
+      <div class="sidebar-footer">
+        <button class="util-btn" id="clearChatBtn" title="Clear Chat History">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Clear Chat
+        </button>
+        <button class="util-btn" id="restartFlowBtn" title="Reset Current Flow / Memory">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+          Reset Session
+        </button>
+        <button class="util-btn" id="exportChatBtn" title="Export Chat Transcript">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export Notes
+        </button>
+      </div>
+    </aside>
+
+    <!-- Sidebar Overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Chat Work Area -->
+    <main class="chat-main">
+      <!-- Main Chat Header -->
+      <header class="chat-header">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="sidebarOpenBtn" aria-label="Open Academic Tools Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="bot-status-wrap">
+            <div class="avatar-ring">
+              <div class="bot-avatar-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2a3 3 0 0 0-3 3v1a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2V5a3 3 0 0 0-3-3z"/>
+                  <path d="M4 14v4a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4v-4"/>
+                  <circle cx="9" cy="9" r="1"/>
+                  <circle cx="15" cy="9" r="1"/>
+                </svg>
+              </div>
+              <span class="status-dot online"></span>
+            </div>
+            <div class="bot-info">
+              <div class="bot-title-row">
+                <h1>AcademiaAI</h1>
+                <span class="model-tag">v2.4 Intelligent Agent</span>
+              </div>
+              <p class="bot-status-text">Online • Intelligent NLP Engine Active</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Theme" aria-label="Toggle Theme">
+            <span class="theme-icon-light" id="themeIconLight">☀️</span>
+            <span class="theme-icon-dark" id="themeIconDark">🌙</span>
+          </button>
+          <button class="header-action-btn" id="headerRestartBtn" title="Restart Conversation">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+            <span class="btn-text">Restart</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Chat History Log Viewport -->
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+        <!-- Messages are rendered dynamically by script.js -->
+      </div>
+
+      <!-- Typing Indicator Widget -->
+      <div class="typing-indicator-container" id="typingIndicator" style="display: none;">
+        <div class="bot-avatar-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a3 3 0 0 0-3 3v1a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2V5a3 3 0 0 0-3-3z"/>
+            <path d="M4 14v4a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4v-4"/>
+          </svg>
+        </div>
+        <div class="typing-bubble">
+          <span class="typing-label">AcademiaAI is formulating response</span>
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Suggestion Chips Carousel -->
+      <div class="suggestions-bar" id="suggestionsBar">
+        <span class="suggestions-label">Suggested:</span>
+        <div class="suggestions-track" id="suggestionsTrack">
+          <!-- Dynamically populated or updated based on flow -->
+          <button class="chip" data-prompt="Create a study plan for my exam">📅 Create Study Plan</button>
+          <button class="chip" data-prompt="Start an aptitude practice quiz">🧠 Aptitude Quiz</button>
+          <button class="chip" data-prompt="Explain Dynamic Programming vs Recursion">📚 Explain DP vs Recursion</button>
+          <button class="chip" data-prompt="Suggest college project ideas for Computer Science">💡 Project Ideas</button>
+          <button class="chip" data-prompt="How can I manage time effectively during exams?">⏳ Time Management</button>
+          <button class="chip" data-prompt="How to get a software engineering internship?">💼 SDE Internship Guide</button>
+          <button class="chip" data-prompt="Explain Normalization in DBMS">🗄️ Explain DBMS Normalization</button>
+        </div>
+      </div>
+
+      <!-- Bottom Chat Input Bar -->
+      <footer class="chat-input-area">
+        <form class="chat-form" id="chatForm">
+          <div class="input-wrapper">
+            <textarea 
+              id="userInput" 
+              class="chat-input" 
+              placeholder="Ask anything (e.g. 'Create study plan for DSA', 'Explain Deadlocks', 'Start quiz')..." 
+              rows="1" 
+              maxlength="1000"
+              aria-label="Student Query Input"
+              required></textarea>
+            <div class="input-actions-inner">
+              <button type="button" class="icon-tool-btn" id="voiceHelpBtn" title="Speech Dictation Simulator / Voice Prompt">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                  <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="send-btn" id="sendBtn" aria-label="Send Message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </form>
+        <div class="input-hints">
+          <span>Press <strong>Enter</strong> to send • <strong>Shift + Enter</strong> for new line • Natural Language Understanding Active</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Main JavaScript Logic -->
+  <script src="script.js"></script>
+</body>
+</html>
